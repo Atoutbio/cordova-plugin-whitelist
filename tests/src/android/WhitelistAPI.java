@@ -18,7 +18,7 @@
 */
 package org.apache.cordova.test;
 
-import org.apache.cordova.Whitelist;
+import org.apache.cordova.Allowlist;
 import org.apache.cordova.Config;
 
 import org.apache.cordova.CallbackContext;
@@ -44,25 +44,25 @@ public class WhitelistAPI extends CordovaPlugin {
         if (action.equals("URLMatchesPatterns")) {
             String url = args.getString(0);
             JSONArray patterns = args.getJSONArray(1);
-            Whitelist whitelist = new Whitelist();
+            Allowlist whitelist = new Allowlist();
             for (int i=0; i < patterns.length(); i++) {
                 String pattern = patterns.getString(i);
                 whitelist.addWhiteListEntry(pattern, false);
             }
-            boolean isAllowed = whitelist.isUrlWhiteListed(url);
+            boolean isAllowed = whitelist.isUrlAllowListed(url);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, isAllowed));
             return true;
         } else if (action.equals("URLIsAllowed")) {
             String url = args.getString(0);
             /* This code exists for compatibility between 3.x and 4.x versions of Cordova.
              * Previously the CordovaWebView class had a method, getWhitelist, which would
-             * return a Whitelist object. Since the fixed whitelist is removed in Cordova 4.x,
+             * return a Allowlist object. Since the fixed whitelist is removed in Cordova 4.x,
              * the correct call now is to shouldAllowRequest from the plugin manager.
              */
             Boolean isAllowed = null;
             try {
-                Method isUrlWhiteListed = Config.class.getDeclaredMethod("isUrlWhitelisted", String.class);
-                isAllowed = (Boolean)isUrlWhiteListed.invoke(url);
+                Method isUrlAllowListed = Config.class.getDeclaredMethod("isUrlWhitelisted", String.class);
+                isAllowed = (Boolean)isUrlAllowListed.invoke(url);
             } catch (NoSuchMethodException e) {
             } catch (IllegalAccessException e) {
             } catch (InvocationTargetException e) {
